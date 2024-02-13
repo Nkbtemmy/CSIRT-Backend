@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.11.6
 
 WORKDIR /usr/src/app
 
@@ -19,4 +19,4 @@ RUN pip install -r requirements.txt
 # copy project
 COPY . .
 
-CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "send_email.wsgi:application"]
+CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "csirt.wsgi:application"]

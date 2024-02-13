@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  csirt-backend:
+  app:
     image: csirt-backend
     container_name: csirt-backend
     build:
@@ -13,12 +13,12 @@ services:
     volumes:
       - ./:/usr/src/app
     command: >
-      bash -c "python manage.py wait_for_db &&
+      bash -c "
         python manage.py migrate &&
         python manage.py collectstatic --noinput &&
         gunicorn csirt.wsgi:application -w 2 -b 0.0.0.0:8000 --reload"
     env_file:
-      - .env
+      - .env.docker
     environment:
       LAUNCH_TYPE: webserver
     depends_on:
