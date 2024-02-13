@@ -134,3 +134,4 @@ static/
 staticfiles/
 
 .vscode
+myenv

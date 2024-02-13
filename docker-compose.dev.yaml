@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  csirt-backend:
+    image: csirt-backend
+    container_name: csirt-backend
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.dev
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/usr/src/app
+    command: >
+      bash -c "python manage.py wait_for_db &&
+        python manage.py migrate &&
+        python manage.py collectstatic --noinput &&
+        gunicorn csirt.wsgi:application -w 2 -b 0.0.0.0:8000 --reload"
+    env_file:
+      - .env
+    environment:
+      LAUNCH_TYPE: webserver
+    depends_on:
+      - csirt_postgres_db
+
+  csirt_postgres_db:
+    image: postgres
+    restart: on-failure
+    container_name: postgres_host
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  
+  
+volumes:
+  postgres_data:
