@@ -3,41 +3,51 @@ version: "3"
 services:
   app:
     image: csirt-backend
-    container_name: csirt-backend
+    # container_name: csirt-backend
     build:
       context: .
       dockerfile: ./docker/Dockerfile.dev
-    restart: always
+    restart: on-failure
     ports:
       - 8000:8000
     volumes:
       - ./:/usr/src/app
+       # python manage.py wait_for_db && \
     command: >
       bash -c "
-        python manage.py migrate &&
-        python manage.py collectstatic --noinput &&
+        python manage.py migrate && \
+        python manage.py collectstatic --noinput && \
         gunicorn csirt.wsgi:application -w 2 -b 0.0.0.0:8000 --reload"
-    env_file:
-      - .env.docker
     environment:
       LAUNCH_TYPE: webserver
+      DB_HOST: csirt_postgres_db
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: csirt_db
+      DB_PORT: 5432
+      DB_ENGINE: django.db.backends.postgresql
     depends_on:
       - csirt_postgres_db
+    networks:
+      - csirt_network
 
   csirt_postgres_db:
     image: postgres
     restart: on-failure
-    container_name: postgres_host
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_HOST_AUTH_METHOD=trust
-    ports:
-      - "5433:5432"
+      POSTGRES_DB: csirt_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-  
-  
+    networks:
+      - csirt_network
+
 volumes:
   postgres_data:
+
+networks:
+  csirt_network:
+    driver: bridge

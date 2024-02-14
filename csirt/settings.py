@@ -51,6 +51,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'corsheaders',
+    'country',
+    'info',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -80,6 +83,15 @@ TEMPLATES = [
         },
     },
 ]
+
+# configure authantication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',  # If you want to use session authentication for browsable API
+        'rest_framework.authentication.TokenAuthentication',    # If you want to use token authentication
+    ],
+}
+
 
 WSGI_APPLICATION = 'csirt.wsgi.application'
 
