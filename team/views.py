@@ -1,6 +1,6 @@
 from rest_framework import generics
-from info.models import CERT
-from info.serializers import CERTSerializer
+from team.models import CERT
+from team.serializers import CERTSerializer
 
 class CERTListCreate(generics.ListCreateAPIView):
     queryset = CERT.objects.all()

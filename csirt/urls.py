@@ -27,8 +27,6 @@ urlpatterns = [
     path("", RedirectView.as_view(url="/docs/", permanent=False)),
     # Include DRF authentication URLs
     path('api-auth/', include('rest_framework.urls')),
-    # Include URLs for countries app
-    path("countries/", include("country.urls")),
-    # Include URLs for info app
-    path("info/", include("info.urls")),
+    # Include URLs for team app
+    path("teams/", include("team.urls")),
 ]

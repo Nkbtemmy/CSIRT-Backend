@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class InfoConfig(AppConfig):
+class TeamConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'info'
+    name = 'team'
