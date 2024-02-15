@@ -5,18 +5,22 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install Python and Package Libraries
-# RUN apt-get update && apt-get install -y libpq-dev gcc postgresql-client \
-#     python3-dev musl-dev
-RUN apt-get update
+# Install system dependencies
+RUN apt-get update && apt-get install -y libpq-dev gcc postgresql-client
 
-# install dependencies
+# Create and activate a virtual environment
+RUN python -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+
+# Install Python packages within the virtual environment
 COPY ./requirements*.txt .
 RUN pip install --upgrade pip
 RUN pip install gunicorn
 RUN pip install -r requirements.txt
 
-# copy project
+# Copy project files into the container
 COPY . .
 
-CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "csirt.wsgi:application"]
+# Run the application with Gunicorn
+CMD ["python","manage.py", "runserver"]
+# CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "csirt.wsgi:application"]

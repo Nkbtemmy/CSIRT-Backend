@@ -4,6 +4,7 @@ from django.views.generic import RedirectView
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework.permissions import AllowAny
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 # Define the schema view for Swagger documentation
 schema_view = get_schema_view(
@@ -30,3 +31,5 @@ urlpatterns = [
     # Include URLs for team app
     path("teams/", include("team.urls")),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
