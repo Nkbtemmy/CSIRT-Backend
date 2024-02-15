@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django_countries.fields import CountryField
+from django.core.exceptions import ValidationError
 
 class CERT(models.Model):
     id = models.UUIDField(primary_key=True, editable=False)
@@ -14,8 +15,8 @@ class CERT(models.Model):
     def save(self, *args, **kwargs):
         # Check if an instance with the same country and name already exists
         if CERT.objects.filter(country=self.country, name=self.name).exists():
-            # If exists, do not save
-            return
+            # If exists, raise a ValidationError
+            raise ValidationError("A CERT with the same country and name already exists.")
         else:
             # If does not exist, save normally
             if not self.id:
