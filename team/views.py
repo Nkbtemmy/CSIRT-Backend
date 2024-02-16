@@ -1,6 +1,7 @@
 from rest_framework import generics
 from team.models import CERT
 from team.serializers import CERTSerializer
+# from corsheaders.middleware import corsheaders
 
 class CERTListCreate(generics.ListCreateAPIView):
     queryset = CERT.objects.all()
