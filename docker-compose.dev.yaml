@@ -3,7 +3,6 @@ version: "3"
 services:
   app:
     image: csirt-backend
-    # container_name: csirt-backend
     build:
       context: .
       dockerfile: ./docker/Dockerfile.dev
@@ -12,7 +11,6 @@ services:
       - 8000:8000
     volumes:
       - ./:/usr/src/app
-       # python manage.py wait_for_db && \
     command: >
       bash -c "
         python manage.py migrate && \
@@ -20,33 +18,34 @@ services:
         gunicorn csirt.wsgi:application -w 2 -b 0.0.0.0:8000 --reload"
     environment:
       LAUNCH_TYPE: webserver
-      DB_HOST: csirt_postgres_db
+      DB_HOST: postgres
       DB_USER: postgres
       DB_PASSWORD: password
       DB_NAME: csirt_db
       DB_PORT: 5432
       DB_ENGINE: django.db.backends.postgresql
     depends_on:
-      - csirt_postgres_db
+      - postgres
     networks:
       - csirt_network
 
-  csirt_postgres_db:
+  postgres:
     image: postgres
-    restart: on-failure
+    restart: always
+    ports:
+      - "5434:5432"
     environment:
-      POSTGRES_DB: csirt_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_PORT: 5432
-      POSTGRES_HOST_AUTH_METHOD: trust
+      - POSTGRES_DB=csirt_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    command: ["postgres", "-c", "max_connections=200", "-c", "timezone=Etc/UTC", "-c", "default_text_search_config=pg_catalog.english"]
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - csirt_network
 
 volumes:
-  postgres_data:
+  postgres-data:
 
 networks:
   csirt_network:

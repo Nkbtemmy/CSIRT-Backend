@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 
     
 class CERTSerializer(serializers.ModelSerializer):
-    country = CountryField(name_only=True, country_dict=True)
+    country = CountryField(name_only=True)
     class Meta:
         model = CERT
         fields = '__all__'

@@ -1,7 +1,8 @@
-from rest_framework import generics
+from rest_framework import generics, filters
 from team.models import CERT
 from team.serializers import CERTSerializer
 # from corsheaders.middleware import corsheaders
+from django_filters.rest_framework import DjangoFilterBackend
 
 class CERTListCreate(generics.ListCreateAPIView):
     queryset = CERT.objects.all()
@@ -13,7 +14,6 @@ class CRERTRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 
 class CERTByCountryList(generics.ListAPIView):
     serializer_class = CERTSerializer
-
-    def get_queryset(self):
-        country_name = self.kwargs['country']  # Assuming you pass the country name as a URL parameter
-        return CERT.objects.filter(country=country_name)
+    queryset = CERT.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['country']

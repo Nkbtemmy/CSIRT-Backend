@@ -27,7 +27,7 @@ Explain how to use your project. Provide examples and code snippets to demonstra
 
 python
 Copy code
-# How to run application
+# How to run the application
  > python manage.py runserver
   or 
  > docker compose up --build
