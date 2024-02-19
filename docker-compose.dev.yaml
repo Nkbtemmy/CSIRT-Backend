@@ -5,7 +5,7 @@ services:
     image: csirt-backend
     build:
       context: .
-      dockerfile: ./docker/Dockerfile.dev
+      dockerfile: ./Dockerfile.dev
     restart: on-failure
     ports:
       - 8000:8000
